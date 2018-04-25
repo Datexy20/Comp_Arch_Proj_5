@@ -27,11 +27,11 @@ void printCacheOrg(int org)
 void showCacheAddress()
 {
   for(int j=0; j<BLOCKS_IN_CACHE; j++) {
-    
+
 		if (m.myCache.cblocks[j].valid == 1)
 		{
 		printf("Address in block %d contains tag %d. It was last hit/created %d turns ago. \n", j, m.myCache.cblocks[j].tag, m.myCache.cblocks[j].last_used);
-    for(int k=0; k<WORDS_PER_BLOCK; k++) 
+    for(int k=0; k<WORDS_PER_BLOCK; k++)
 			{
 			printf("Location %d contains data %d. \n", k, m.myCache.cblocks[j].data[k]);
 			}
@@ -58,7 +58,7 @@ int getData (int address)                // load
 	  unsigned int tag = address & 0b11111100000;				// Tag = upper remaining (6) bits of the address
 	  index = index >> 2;										// Shift index to proper location (2 to right)
 	  tag = tag >> 5;											// Shift tag to proper location (shift 5 to the right)
-	  if ((m.myCache.cblocks[index].tag == tag) &&				// Check to see if the tag in index slot of cache is the same as the tag of the data, 
+	  if ((m.myCache.cblocks[index].tag == tag) &&				// Check to see if the tag in index slot of cache is the same as the tag of the data,
 		  (m.myCache.cblocks[index].valid == 1))				// Also check to see if the data is valid.
 	  {
 			// printf("CACHE HIT!\n");
@@ -73,7 +73,7 @@ int getData (int address)                // load
 			{
 				m.myCache.cblocks[i].last_used++;
 			}
-		  data = mm.blocks[address >> 2].data[wordAddress];		// If it's not in the cache, get data from the memory location in the address. Use lowest two bits for the location, 
+		  data = mm.blocks[address >> 2].data[wordAddress];		// If it's not in the cache, get data from the memory location in the address. Use lowest two bits for the location,
 		  m.myCache.cblocks[index].tag = tag;
 			m.myCache.cblocks[index].valid = 1;
 			m.myCache.cblocks[index].last_used = 0;
@@ -100,8 +100,8 @@ int getData (int address)                // load
 	  setnum = setnum >> 2;															// Shift index to proper location (2 to right)
 	  tag = tag >> 4;																		// Shift tag to proper location (shift 4 to the right)
 		for (int j = 0; j < BLOCKS_IN_SET; j++)						// Starting at the 0th position in the set, search until the blocks/set - 1 position (aka, for two blocks, look at position 0 and 1)
-		{ 
-			if ((m.myCache.cblocks[2*setnum + j].tag == tag) && (m.myCache.cblocks[2*setnum + j].valid == 1))				// If the tag in position 2*setnum+j, 
+		{
+			if ((m.myCache.cblocks[2*setnum + j].tag == tag) && (m.myCache.cblocks[2*setnum + j].valid == 1))				// If the tag in position 2*setnum+j,
 																																// aka position 0/1 in set setnum, is a match then you take that data and store it.
 			{
 				data = m.myCache.cblocks[2 * setnum + j].data[wordAddress];			// Take data from that address in that block and store
@@ -111,13 +111,13 @@ int getData (int address)                // load
 			}
 			else if (j == (BLOCKS_IN_SET - 1))
 			{
-				m.myCache.cblocks[2 * setnum + j].last_used++;				// If it was NOT in that position, and this is the last tag in that block, 
+				m.myCache.cblocks[2 * setnum + j].last_used++;				// If it was NOT in that position, and this is the last tag in that block,
 																															// then you want to increment the LRU value of that block.
 			}
 		}
 	  if (foundVal != 1)
 	  {
-		  data = mm.blocks[address >> 2].data[wordAddress];				// If it's not in the cache, get data from the memory location in the address. Use lowest two bits for the location, 
+		  data = mm.blocks[address >> 2].data[wordAddress];				// If it's not in the cache, get data from the memory location in the address. Use lowest two bits for the location,
 			int pickWhichInSet = 0;
 			if (m.myCache.cblocks[2*setnum].last_used < m.myCache.cblocks[2*setnum + 1].last_used) // If the first block was used less...
 			{
@@ -137,7 +137,7 @@ int getData (int address)                // load
 		  clockX = clockX + 100;										// Increment clock by 100, as per instruction
 		  numMisses++;													// Increment the number of misses by one.
 	  }
-  } 
+  }
 
   else if (cache_org == FULLY)
   {
@@ -146,13 +146,13 @@ int getData (int address)                // load
 	  unsigned int tag = address & 0b1111111000;				// Tag = upper remaining (7) bits of the address
 	  unsigned int foundVal = 0;
 	  setnum = setnum >> 2;															// Shift index to proper location (2 to right)
-	  tag = tag >> 4;			
-	  Full_block = BLOCKS_IN_SET + 6																			// Shift tag to proper location (shift 4 to the right)
-		
-		
+	  tag = tag >> 4;
+    unsigned int Full_block = 0;
+	  Full_block = BLOCKS_IN_SET + 6;																			// Shift tag to proper location (shift 4 to the right)
+
 		for (int j = 0; j < Full_block; j++)						// Starting at the 0th position in the set, search until the blocks/set - 1 position (aka, for two blocks, look at position 0 and 1)
-		{ 
-			if ((m.myCache.cblocks[2*setnum + j].tag == tag) && (m.myCache.cblocks[2*setnum + j].valid == 1))				// If the tag in position 2*setnum+j, 
+		{
+			if ((m.myCache.cblocks[2*setnum + j].tag == tag) && (m.myCache.cblocks[2*setnum + j].valid == 1))				// If the tag in position 2*setnum+j,
 																																// aka position 0/1 in set setnum, is a match then you take that data and store it.
 			{
 				data = m.myCache.cblocks[2 * setnum + j].data[wordAddress];			// Take data from that address in that block and store
@@ -162,13 +162,13 @@ int getData (int address)                // load
 			}
 			else if (j == (Full_block - 1))
 			{
-				m.myCache.cblocks[2 * setnum + j].last_used++;				// If it was NOT in that position, and this is the last tag in that block, 
+				m.myCache.cblocks[2 * setnum + j].last_used++;				// If it was NOT in that position, and this is the last tag in that block,
 																															// then you want to increment the LRU value of that block.
 			}
 		}
 	  if (foundVal != 1)
 	  {
-		  data = mm.blocks[address >> 2].data[wordAddress];				// If it's not in the cache, get data from the memory location in the address. Use lowest two bits for the location, 
+		  data = mm.blocks[address >> 2].data[wordAddress];				// If it's not in the cache, get data from the memory location in the address. Use lowest two bits for the location,
 			int pickWhichInSet = 0;
 			if (m.myCache.cblocks[2*setnum].last_used < m.myCache.cblocks[2*setnum + 1].last_used) // If the first block was used less...
 			{
@@ -234,10 +234,10 @@ void putData (int address, int value)     // store
 			{
 				pickWhichInSet = 0; // Replace the first one.
 			}
-			
+
 			m.myCache.cblocks[2 * setnum + pickWhichInSet].tag = tag;
 			m.myCache.cblocks[2 * setnum + pickWhichInSet].valid = 1;
-			m.myCache.cblocks[2 * setnum + pickWhichInSet].data[wordAddress] = value; 
+			m.myCache.cblocks[2 * setnum + pickWhichInSet].data[wordAddress] = value;
 			m.myCache.cblocks[2 * setnum + pickWhichInSet].last_used = 0;
 
 			mm.blocks[address >> 2].data[wordAddress] = value;		// Update the data in the memory for this location.
@@ -261,10 +261,10 @@ void putData (int address, int value)     // store
 			{
 				pickWhichInSet = 0; // Replace the first one.
 			}
-			
+
 			m.myCache.cblocks[2 * setnum + pickWhichInSet].tag = tag;
 			m.myCache.cblocks[2 * setnum + pickWhichInSet].valid = 1;
-			m.myCache.cblocks[2 * setnum + pickWhichInSet].data[wordAddress] = value; 
+			m.myCache.cblocks[2 * setnum + pickWhichInSet].data[wordAddress] = value;
 			m.myCache.cblocks[2 * setnum + pickWhichInSet].last_used = 0;
 
 			mm.blocks[address >> 2].data[wordAddress] = value;		// Update the data in the memory for this location.
